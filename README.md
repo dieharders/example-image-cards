@@ -12,4 +12,4 @@ A small example page demonstrating how to load externally hosted images and disp
 - Fade-in photos once they finish loading.
 - Hove over effects (hide overlay and descriptions).
 
-![Preview](https://github.com/dieharders/example-image-cards/blob/master/preview.png)
+![Preview](https://github.com/dieharders/example-image-cards/blob/master/preview.jpg)
