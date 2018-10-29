@@ -1,3 +1,14 @@
+// Globals
+var photoList;
+
+// Check when photo is loaded into DOM from server
+function imgLoaded(el) {
+  $(el).fadeIn("slow");
+  el.removeEventListener("load", function() {
+    console.log("image has loaded: "+el.src);
+  });
+}
+
 // Get list of photos
 function getPhotos() {
   console.log('Getting photos...');
@@ -7,7 +18,7 @@ function getPhotos() {
   const numPagesAvailable = 100; // im guessing
   let randomImageIndex = Math.floor(Math.random() * numPagesAvailable);
   // Client Access ID from your unsplash app dashboard
-  const clientID = '<YOUR-CLIENT-ID>'; //'client_id=XXX'
+  const clientID = '<YOUR-CLIENTID>'; //'client_id=XXX'
 
   // Query api for a single page of photos
   var params = {
@@ -17,9 +28,10 @@ function getPhotos() {
   }
 
   $.getJSON(`https://api.unsplash.com/photos/?${clientID}`, params, function(data) {
-    console.log(data);
+    photoList = data;
+    console.log(photoList);
 
-    // Clear DOM
+    // Clear photo DOM elements
     $('#photos').html('');
 
     $.each(data, function(index, value) {
@@ -32,8 +44,8 @@ function getPhotos() {
       var imageURL = value.urls.regular;
       var dl = value.links.download;
       var likes = value.likes;
-      var w = value.width;
-      var h = value.height;
+      var w = Number(value.width);
+      var h = Number(value.height);
       var col = value.color;
 
       // Make Elements
@@ -56,7 +68,9 @@ function getPhotos() {
       photoEl.title = imageURL;
       var imgEl = document.createElement('img');
       imgEl.src = imageURL;
+      $(imgEl).hide(); //Hide image to fadeIn later onLoad
       photoEl.appendChild(imgEl);
+      imgEl.addEventListener( "load", imgLoaded(imgEl) ); // listen for done loading
       // Check image aspect ratio and change scaling
       if (w < h || w == h) {
         // Portrait or Square
@@ -64,9 +78,9 @@ function getPhotos() {
         imgEl.style.height = 'auto';
         imgEl.style.width = maxWidth;
       } else if (w > h) {
-        // Landscape        
-        imgEl.style.minHeight = '100%';
-        imgEl.style.height = '100%';
+        // Landscape      
+        imgEl.style.minHeight = 'auto';
+        imgEl.style.height = 'auto';
         imgEl.style.width = 'auto';
         imgEl.style.maxWidth = '125%';
       }
@@ -79,8 +93,9 @@ function getPhotos() {
   });
 }
 
-// Resize DOM items
+// Resize DOM items. When window gets too small, shrink photo containers.
 function resizeItems() {
+  // Check window size
   if ($(window).width() < 480) {
     maxWidth = '240px';
     maxHeight = '180px';
@@ -89,7 +104,33 @@ function resizeItems() {
     maxHeight = '240px';
   }
   // Update DOM photo container sizes
-  $('img').css('width', maxWidth);
+  let children = document.getElementsByClassName('photo-image');
+  // Loop thru JSON data and use same index for img lookup since they are in same order.
+  for (let index = 0; index < photoList.length; index++) {
+    let w = Number(photoList[index].width);
+    let h = Number(photoList[index].height);
+    let image = children[index].children[0];
+    if (w < h || w == h) {
+      // Portrait/Square
+      image.style.width = '100%';
+      image.style.height = 'auto';
+      image.style.minHeight = 'auto';
+      image.style.maxHeight = 'auto';
+    } else if (w > h) {
+      // Landscape
+      image.style.width = '100%';
+      image.style.height = 'auto';
+      image.style.minHeight = 'auto';
+      image.style.maxHeight = 'auto';
+      // Keep stretching height until it reaches height of container
+      if (image.height < h) {
+        image.style.height = maxHeight;
+        image.style.minHeight = maxHeight;
+        image.style.maxHeight = maxHeight;
+      }
+    }
+  }
+  // Resize item container
   $('.photo-item').css('width', maxWidth);
   $('.photo-item').css('max-width', maxWidth);
   $('.photo-item').css('min-width', maxWidth);
@@ -103,12 +144,14 @@ function goGitHub() {
   window.open('https://github.com/dieharders/example-image-cards', '_blank');
 }
 
+///////////
 // LOGIC //
+///////////
 //
 // Get photos on startup
 $(document).ready(function() {
   getPhotos();
-  resizeItems();
+  //resizeItems();
 
   // Hide name, bio, etc onHover
   $(document).on('mouseenter', '.sel-item', function() {
