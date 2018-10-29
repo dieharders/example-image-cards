@@ -1,7 +1,7 @@
 # Image Cards
 A small example page demonstrating how to load externally hosted images and display various sized photos in a container with defined size.
 
-## ![Live Demo](https://example-image-cards.firebaseapp.com/)
+## Live Demo: https://example-image-cards.firebaseapp.com/
 
 ## What it does:
 - Query the Unsplash API to fetch random photos.
