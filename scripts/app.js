@@ -98,6 +98,11 @@ function resizeItems() {
   $('.photo-item').css('min-height', maxHeight);
 }
 
+// Link to GitHub
+function goGitHub() {
+  window.open('https://github.com/dieharders/example-image-cards', '_blank');
+}
+
 // LOGIC //
 //
 // Get photos on startup
