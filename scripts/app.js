@@ -1,22 +1,26 @@
 // Globals
 var photoList;
+var maxWidth = '360px';
+var maxHeight = '240px';
 
 // Check when photo is loaded into DOM from server
 function imgLoaded(el) {
-  $(el).fadeIn("slow");
-  el.removeEventListener("load", function() {
-    console.log("image has loaded: "+el.src);
-  });
+  setTimeout(function() {
+    $(el).fadeIn("slow");
+  }, 600);
+  //var node = el;
+  //for (var i=0; (node=node.previousSibling); i++); // get index of node loaded
+  //resize(i, el.parentNode);
+  
+  //console.log("image has loaded: "+el.src);
 }
 
 // Get list of photos
 function getPhotos() {
-  console.log('Getting photos...');
-
-  const maxWidth = '360px';
-  const maxHeight = '240px';
   const numPagesAvailable = 100; // im guessing
   let randomImageIndex = Math.floor(Math.random() * numPagesAvailable);
+  console.log('Getting photos...from page ' + randomImageIndex);
+
   // Client Access ID from your unsplash app dashboard
   const clientID = '<YOUR-CLIENTID>'; //'client_id=XXX'
 
@@ -29,7 +33,7 @@ function getPhotos() {
 
   $.getJSON(`https://api.unsplash.com/photos/?${clientID}`, params, function(data) {
     photoList = data;
-    console.log(photoList);
+    //console.log(photoList);
 
     // Clear photo DOM elements
     $('#photos').html('');
@@ -71,16 +75,13 @@ function getPhotos() {
       $(imgEl).hide(); //Hide image to fadeIn later onLoad
       photoEl.appendChild(imgEl);
       imgEl.addEventListener( "load", imgLoaded(imgEl) ); // listen for done loading
+      
       // Check image aspect ratio and change scaling
       if (w < h || w == h) {
         // Portrait or Square
-        imgEl.style.minHeight = 'auto';
-        imgEl.style.height = 'auto';
         imgEl.style.width = maxWidth;
       } else if (w > h) {
         // Landscape      
-        imgEl.style.minHeight = 'auto';
-        imgEl.style.height = 'auto';
         imgEl.style.width = 'auto';
         imgEl.style.maxWidth = '125%';
       }
@@ -90,53 +91,55 @@ function getPhotos() {
       $('#photos').append(itemEl);
 
     });
+    resizeItems();
   });
 }
-
-// Resize DOM items. When window gets too small, shrink photo containers.
+// When window gets too small, shrink photo containers.
+// Resize all DOM items.
 function resizeItems() {
-  // Check window size
-  if ($(window).width() < 480) {
-    maxWidth = '240px';
-    maxHeight = '180px';
-  } else {
-    maxWidth = '360px';
-    maxHeight = '240px';
-  }
-  // Update DOM photo container sizes
-  let children = document.getElementsByClassName('photo-image');
   // Loop thru JSON data and use same index for img lookup since they are in same order.
   for (let index = 0; index < photoList.length; index++) {
-    let w = Number(photoList[index].width);
-    let h = Number(photoList[index].height);
-    let image = children[index].children[0];
-    if (w < h || w == h) {
-      // Portrait/Square
-      image.style.width = '100%';
-      image.style.height = 'auto';
-      image.style.minHeight = 'auto';
-      image.style.maxHeight = 'auto';
-    } else if (w > h) {
-      // Landscape
-      image.style.width = '100%';
-      image.style.height = 'auto';
-      image.style.minHeight = 'auto';
-      image.style.maxHeight = 'auto';
-      // Keep stretching height until it reaches height of container
-      if (image.height < h) {
+    resize(index, null);
+  }
+}
+
+// Resize an item
+function resize(index, container) {
+  let w = Number(photoList[index].width);
+  let h = Number(photoList[index].height);
+  var image;
+
+  if (container == null) {
+    container = document.getElementsByClassName('photo-image');
+    image = container[index].children[0];
+  } else {
+    image = container.children[0];
+  }
+
+  image.style.height = '100%';
+  image.style.minHeight = '100%';
+  image.style.maxHeight = '100%';
+
+  // Change dimensions of <img>
+  if (w < h || w == h) {
+    // Portrait/Square
+    image.style.width = '100%';
+  } else if (w > h) {
+    // Landscape
+    image.style.width = '100%';
+
+    // Keep stretching height until it reaches height of container
+    var parent = document.getElementsByClassName('photo-item');
+    if (parent[index] != undefined) {
+      var item_h = parent[index].style.height;
+      item_h = item_h.replace('px', '');
+      
+      if (image.height < item_h) {
+        image.style.width = 'auto';
         image.style.height = maxHeight;
-        image.style.minHeight = maxHeight;
-        image.style.maxHeight = maxHeight;
       }
     }
   }
-  // Resize item container
-  $('.photo-item').css('width', maxWidth);
-  $('.photo-item').css('max-width', maxWidth);
-  $('.photo-item').css('min-width', maxWidth);
-  $('.photo-item').css('height', maxHeight);
-  $('.photo-item').css('max-height', maxHeight);
-  $('.photo-item').css('min-height', maxHeight);
 }
 
 // Link to GitHub
@@ -151,7 +154,7 @@ function goGitHub() {
 // Get photos on startup
 $(document).ready(function() {
   getPhotos();
-  //resizeItems();
+  // TODO - Resize items on startup, but after img's loaded
 
   // Hide name, bio, etc onHover
   $(document).on('mouseenter', '.sel-item', function() {
@@ -171,3 +174,30 @@ $(document).ready(function() {
 $(window).resize(function() {
   resizeItems();
 });
+
+/*
+// Check photo loading completion
+function checkComplete() {
+  for (let index = 0; index < photoList.length; index++) {
+    var images = document.getElementsByClassName('photo-image')[index].childNodes;
+    if (images == undefined) {
+      return false;
+    } else {
+      var image = images[0];
+    }
+    console.log(image.getAttribute("complete"));
+    if (image.getAttribute("complete")) {
+      $(image).fadeIn("slow");
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+// Set loading complete check timer
+var completeTimer;
+completeTimer = setInterval(function(){
+  var b = checkComplete();
+  if (b) {clearInterval(completeTimer)}
+}, 3000);
+*/
