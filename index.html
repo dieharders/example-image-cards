@@ -8,22 +8,25 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   </head>
   <body>
-    
+
     <!-- Master Container DIV -->
     <div id="app">
-      <div class="title info">
-        <div style="display: inline-block; width: 64px; height: 64px;"><img src="./images/icon.svg" width="64px" height="64px"></div>
-        <h1>Image Cards</h1>
-        <br>
-        <span class="plate">Photos courtesy of <a href="https://unsplash.com">unsplash</a></span>
-        <br>
-        <span class="plate">These images resize to fill the container regardless of aspect ratio.</span>
-        
-        <div style="float: right; margin: 8px;">
-          <button onclick="goGitHub()">👁️ View on GitHub</button>
-          <button onclick="getPhotos()">♻️ Refresh</button>
+      <div class="title">
+
+        <div class="info">
+          <div style="display: inline-block; width: 64px; height: 64px;"><img src="./images/icon.svg" width="64px" height="64px"></div>
+          <h1>Image Cards</h1>
+          <br>
+          <span class="plate">Photos courtesy of <a href="https://unsplash.com">unsplash</a></span>
+          <br>
+          <span class="plate">These images resize to fill the container regardless of aspect ratio.</span>
+          
+          <div style="float: right; margin: 8px;">
+            <button onclick="goGitHub()">👁️ View on GitHub</button>
+            <button onclick="getPhotos()">♻️ Refresh</button>
+          </div>
         </div>
-        
+
       </div>
 
       <div id="photos"></div>

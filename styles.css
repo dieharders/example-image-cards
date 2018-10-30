@@ -102,7 +102,7 @@ a:hover {
     display: inline-block;
     position: relative;
     color: rgb(235, 235, 235);
-    background-color: rgba(56, 54, 66, 0.68);
+    background-color: rgba(56, 54, 66, 0.8);
     border-radius:  4px;
     overflow: hidden;
     margin: 1px;
@@ -188,7 +188,7 @@ button:hover {
 }
 
 /* Responsive */
-@media only screen and (max-width: 810px) {
+@media only screen and (max-width: 1000px) {
     /* For mobile phones: */
     .photo-item {
         display: block;
@@ -200,5 +200,31 @@ button:hover {
         width: 90%;
         min-width: 90%;
         max-width: 90%;
+    }
+    h1 {
+        font-size: 34pt;
+    }
+    .info {
+        width: 90%;
+        margin: auto;
+        font-size: 14pt;
+    }
+    button {
+        font-size: 14pt;
+    }
+    .name, .likes {
+        font-size: 16pt;
+    }
+    .bio {
+        font-size: 11pt;
+        max-width: 70%;
+    }
+    .photo-item {
+        height: 360px;
+        min-height: 360px;
+        max-height: 360px;
+    }
+    .photo-image {
+        min-height: 360px;
     }
 }

@@ -7,10 +7,7 @@ var maxHeight = '240px';
 function imgLoaded(el) {
   setTimeout(function() {
     $(el).fadeIn("slow");
-  }, 600);
-  //var node = el;
-  //for (var i=0; (node=node.previousSibling); i++); // get index of node loaded
-  //resize(i, el.parentNode);
+  }, 800);
   
   //console.log("image has loaded: "+el.src);
 }
@@ -105,6 +102,11 @@ function resizeItems() {
 
 // Resize an item
 function resize(index, container) {
+  if ($(window).width() < 1000) {
+    maxHeight = '360px';
+  } else {
+    maxHeight = '240px';
+  }
   let w = Number(photoList[index].width);
   let h = Number(photoList[index].height);
   var image;
@@ -129,15 +131,13 @@ function resize(index, container) {
     image.style.width = '100%';
 
     // Keep stretching height until it reaches height of container
-    var parent = document.getElementsByClassName('photo-item');
-    if (parent[index] != undefined) {
-      var item_h = parent[index].style.height;
-      item_h = item_h.replace('px', '');
-      
-      if (image.height < item_h) {
-        image.style.width = 'auto';
-        image.style.height = maxHeight;
-      }
+    var parent = document.getElementsByClassName('photo-item')[index];
+    var item_h = $(parent).height();
+    //item_h = item_h.replace('px', '');
+    
+    if (image.height < item_h) {
+      image.style.width = 'auto';
+      image.style.height = maxHeight;
     }
   }
 }
