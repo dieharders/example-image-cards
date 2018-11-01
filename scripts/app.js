@@ -7,6 +7,8 @@ var maxHeight = '240px';
 function imgLoaded(el) {
   setTimeout(function() {
     $(el).fadeIn("slow");
+    // Remove spinner element
+    el.children[0].remove();
   }, 800);
   
   //console.log("image has loaded: "+el.src);
@@ -19,7 +21,7 @@ function getPhotos() {
   console.log('Getting photos...from page ' + randomImageIndex);
 
   // Client Access ID from your unsplash app dashboard
-  const clientID = '<YOUR-CLIENTID>'; //'client_id=XXX'
+  const clientID = ''; //'client_id=XXX'
 
   // Query api for a single page of photos
   var params = {
@@ -51,7 +53,7 @@ function getPhotos() {
 
       // Make Elements
       //
-      // Item
+      // Item Container
       var itemEl = document.createElement('div');
       itemEl.className = 'photo-item';
       itemEl.title = dl;
@@ -67,79 +69,20 @@ function getPhotos() {
       var photoEl = document.createElement('div');
       photoEl.className = 'photo-image';
       photoEl.title = imageURL;
-      var imgEl = document.createElement('img');
-      imgEl.src = imageURL;
-      $(imgEl).hide(); //Hide image to fadeIn later onLoad
-      photoEl.appendChild(imgEl);
-      imgEl.addEventListener( "load", imgLoaded(imgEl) ); // listen for done loading
-      
-      // Check image aspect ratio and change scaling
-      if (w < h || w == h) {
-        // Portrait or Square
-        imgEl.style.width = maxWidth;
-      } else if (w > h) {
-        // Landscape      
-        imgEl.style.width = 'auto';
-        imgEl.style.maxWidth = '125%';
-      }
+      var imgEl = document.createElement('div');
+      imgEl.className = 'imgLoading';
+      $(photoEl).hide(); //Hide image to fadeIn later onLoad
+      photoEl.style.backgroundImage = 'url(' + imageURL + ')';
+      itemEl.appendChild(imgEl);
+      photoEl.addEventListener( "load", imgLoaded(photoEl) ); // listen for done loading
 
       // Build DOM
       itemEl.appendChild(photoEl);
       $('#photos').append(itemEl);
 
     });
-    resizeItems();
+    //resizeItems();
   });
-}
-// When window gets too small, shrink photo containers.
-// Resize all DOM items.
-function resizeItems() {
-  // Loop thru JSON data and use same index for img lookup since they are in same order.
-  for (let index = 0; index < photoList.length; index++) {
-    resize(index, null);
-  }
-}
-
-// Resize an item
-function resize(index, container) {
-  if ($(window).width() < 1000) {
-    maxHeight = '360px';
-  } else {
-    maxHeight = '240px';
-  }
-  let w = Number(photoList[index].width);
-  let h = Number(photoList[index].height);
-  var image;
-
-  if (container == null) {
-    container = document.getElementsByClassName('photo-image');
-    image = container[index].children[0];
-  } else {
-    image = container.children[0];
-  }
-
-  image.style.height = '100%';
-  image.style.minHeight = '100%';
-  image.style.maxHeight = '100%';
-
-  // Change dimensions of <img>
-  if (w < h || w == h) {
-    // Portrait/Square
-    image.style.width = '100%';
-  } else if (w > h) {
-    // Landscape
-    image.style.width = '100%';
-
-    // Keep stretching height until it reaches height of container
-    var parent = document.getElementsByClassName('photo-item')[index];
-    var item_h = $(parent).height();
-    //item_h = item_h.replace('px', '');
-    
-    if (image.height < item_h) {
-      image.style.width = 'auto';
-      image.style.height = maxHeight;
-    }
-  }
 }
 
 // Link to GitHub
@@ -154,50 +97,13 @@ function goGitHub() {
 // Get photos on startup
 $(document).ready(function() {
   getPhotos();
-  // TODO - Resize items on startup, but after img's loaded
-
   // Hide name, bio, etc onHover
   $(document).on('mouseenter', '.sel-item', function() {
     $(this).css('background-color', '#00000000');
-    $(this).parent().children('.name').hide();
-    $(this).parent().children('.bio').hide();
-    $(this).parent().children('.likes').hide();
+    $(this).parent().children('.name','.bio','.likes').hide();
   });
   $(document).on('mouseleave', '.sel-item', function() {
     $(this).css('background-color', '#3838384d');
-    $(this).parent().children('.name').show();
-    $(this).parent().children('.bio').show();
-    $(this).parent().children('.likes').show();
+    $(this).parent().children('.name','.bio','.likes').show();
   });
 });
-// Resize items on window resize
-$(window).resize(function() {
-  resizeItems();
-});
-
-/*
-// Check photo loading completion
-function checkComplete() {
-  for (let index = 0; index < photoList.length; index++) {
-    var images = document.getElementsByClassName('photo-image')[index].childNodes;
-    if (images == undefined) {
-      return false;
-    } else {
-      var image = images[0];
-    }
-    console.log(image.getAttribute("complete"));
-    if (image.getAttribute("complete")) {
-      $(image).fadeIn("slow");
-      return true;
-    } else {
-      return false;
-    }
-  }
-}
-// Set loading complete check timer
-var completeTimer;
-completeTimer = setInterval(function(){
-  var b = checkComplete();
-  if (b) {clearInterval(completeTimer)}
-}, 3000);
-*/

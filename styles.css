@@ -102,7 +102,7 @@ a:hover {
     display: inline-block;
     position: relative;
     color: rgb(235, 235, 235);
-    background-color: rgba(56, 54, 66, 0.8);
+    background-color: rgba(53, 34, 253, 0.8);
     border-radius:  4px;
     overflow: hidden;
     margin: 1px;
@@ -159,12 +159,26 @@ a:hover {
     margin: auto;
     border-radius:  2px;
     overflow: hidden;
-    background: url(./images/loading.gif) 50% no-repeat;
+    
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 125%;
 }
 
-img {
-    height: auto;
-    width: 100%;
+.imgLoading {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 16px;
+    width: 16px;
+    padding: 0px;
+    margin: auto;
+
+    background-image: url('./images/loading.gif');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 }
 
 button {
@@ -188,7 +202,7 @@ button:hover {
 }
 
 /* Responsive */
-@media only screen and (max-width: 1000px) {
+@media only screen and (max-width: 810px) {
     /* For mobile phones: */
     .photo-item {
         display: block;
@@ -226,5 +240,6 @@ button:hover {
     }
     .photo-image {
         min-height: 360px;
+        background-size: cover;
     }
 }
