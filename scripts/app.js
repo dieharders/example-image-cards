@@ -4,14 +4,15 @@ var maxWidth = '360px';
 var maxHeight = '240px';
 
 // Check when photo is loaded into DOM from server
-function imgLoaded(el) {
+function imgLoaded(image, spinner) {
   setTimeout(function() {
-    $(el).fadeIn("slow");
+    $(image).fadeIn("slow");
     // Remove spinner element
-    el.children[0].remove();
-  }, 800);
+    //image.parentNode.children[4].remove();
+    spinner.remove();
+  }, 1000);
   
-  //console.log("image has loaded: "+el.src);
+  //console.log("image has loaded: "+image.src);
 }
 
 // Get list of photos
@@ -74,7 +75,7 @@ function getPhotos() {
       $(photoEl).hide(); //Hide image to fadeIn later onLoad
       photoEl.style.backgroundImage = 'url(' + imageURL + ')';
       itemEl.appendChild(imgEl);
-      photoEl.addEventListener( "load", imgLoaded(photoEl) ); // listen for done loading
+      photoEl.addEventListener( "load", imgLoaded(photoEl, imgEl) ); // listen for done loading
 
       // Build DOM
       itemEl.appendChild(photoEl);
@@ -100,10 +101,10 @@ $(document).ready(function() {
   // Hide name, bio, etc onHover
   $(document).on('mouseenter', '.sel-item', function() {
     $(this).css('background-color', '#00000000');
-    $(this).parent().children('.name','.bio','.likes').hide();
+    $(this).parent().children('.name, .bio, .likes').hide();
   });
   $(document).on('mouseleave', '.sel-item', function() {
     $(this).css('background-color', '#3838384d');
-    $(this).parent().children('.name','.bio','.likes').show();
+    $(this).parent().children('.name, .bio, .likes').show();
   });
 });
