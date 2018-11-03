@@ -58,29 +58,30 @@ a:hover {
     -ms-animation:100s scroll infinite linear;
     animation:100s scroll infinite linear;
 }
+/* Be sure background-pos y is equal to background image height to prevent hitching in anim loop */
 @-webkit-keyframes scroll{
     100%{
-        background-position:0px -3000px;
+        background-position:0px -2000px;
     }
 }
 @-moz-keyframes scroll{
     100%{
-        background-position:0px -3000px;
+        background-position:0px -2000px;
     }
 }
 @-o-keyframes scroll{
     100%{
-        background-position:0px -3000px;
+        background-position:0px -2000px;
     }
 }
 @-ms-keyframes scroll{
     100%{
-        background-position:0px -3000px;
+        background-position:0px -2000px;
     }
 } 
 @keyframes scroll{
     100%{
-        background-position:0px -3000px;
+        background-position:0px -2000px;
     }
 }
 

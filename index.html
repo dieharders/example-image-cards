@@ -19,11 +19,13 @@
           <br>
           <span class="plate">Photos courtesy of <a href="https://unsplash.com">unsplash</a></span>
           <br>
-          <span class="plate">These images resize to fill the container regardless of aspect ratio.</span>
+          <span class="plate">Images resize to fill their container regardless of aspect ratio.</span>
+          <span class="plate">Placeholder cards shown while images load.</span>
+          <span class="plate">Infinite scrolling. Load more images when scrolling to the bottom.</span>
           
           <div style="float: right; margin: 8px;">
             <button onclick="goGitHub()">👁️ View on GitHub</button>
-            <button onclick="getPhotos()">♻️ Refresh</button>
+            <button onclick="getPhotos(25, 'latest', true)">♻️ Refresh</button>
           </div>
         </div>
 

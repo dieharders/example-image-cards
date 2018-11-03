@@ -1,5 +1,4 @@
 // Globals
-var photoList;
 var maxWidth = '360px';
 var maxHeight = '240px';
 
@@ -16,7 +15,7 @@ function imgLoaded(image, spinner) {
 }
 
 // Get list of photos
-function getPhotos() {
+function getPhotos(numImages, order, replace) {
   const numPagesAvailable = 100; // im guessing
   let randomImageIndex = Math.floor(Math.random() * numPagesAvailable);
   console.log('Getting photos...from page ' + randomImageIndex);
@@ -27,18 +26,17 @@ function getPhotos() {
   // Query api for a single page of photos
   var params = {
     page : randomImageIndex,
-    per_page : 25,
-    order_by : "latest"
+    per_page : numImages,
+    order_by : order
   }
 
-  $.getJSON(`https://api.unsplash.com/photos/?${clientID}`, params, function(data) {
-    photoList = data;
-    //console.log(photoList);
-
+  $.getJSON(`https://api.unsplash.com/photos/?${clientID}`, params, function(photoList) {
     // Clear photo DOM elements
-    $('#photos').html('');
+    if (replace) {
+      $('#photos').html('');
+    }
 
-    $.each(data, function(index, value) {
+    $.each(photoList, function(index, value) {
       //console.log(value);
       
       // Get attributes from json
@@ -48,8 +46,8 @@ function getPhotos() {
       var imageURL = value.urls.regular;
       var dl = value.links.download;
       var likes = value.likes;
-      var w = Number(value.width);
-      var h = Number(value.height);
+      //var w = Number(value.width);
+      //var h = Number(value.height);
       var col = value.color;
 
       // Make Elements
@@ -72,17 +70,18 @@ function getPhotos() {
       photoEl.title = imageURL;
       var imgEl = document.createElement('div');
       imgEl.className = 'imgLoading';
-      $(photoEl).hide(); //Hide image to fadeIn later onLoad
+      $(photoEl).hide(); // Hide image to fadeIn later onLoad
       photoEl.style.backgroundImage = 'url(' + imageURL + ')';
       itemEl.appendChild(imgEl);
-      photoEl.addEventListener( "load", imgLoaded(photoEl, imgEl) ); // listen for done loading
+      photoEl.addEventListener( "load", imgLoaded(photoEl, imgEl) ); // Listen for done loading
 
       // Build DOM
+      //
+      // Add photo image to item container
       itemEl.appendChild(photoEl);
+      // Add photo item to gallery container
       $('#photos').append(itemEl);
-
     });
-    //resizeItems();
   });
 }
 
@@ -97,7 +96,7 @@ function goGitHub() {
 //
 // Get photos on startup
 $(document).ready(function() {
-  getPhotos();
+  getPhotos(25, "latest", true);
   // Hide name, bio, etc onHover
   $(document).on('mouseenter', '.sel-item', function() {
     $(this).css('background-color', '#00000000');
@@ -107,4 +106,21 @@ $(document).ready(function() {
     $(this).css('background-color', '#3838384d');
     $(this).parent().children('.name, .bio, .likes').show();
   });
+});
+// Load more images if reached the bottom of page
+var lastScrollPosition = 0;
+window.addEventListener('scroll', function() {
+  let divHeight = $(document).height();
+  let windowHeight = $(window).height();
+  let scrollY = $(window).scrollTop();
+  let scrollPos = Math.floor(divHeight - (scrollY + windowHeight));
+  
+  if ( scrollPos <= 0 && lastScrollPosition != scrollPos )
+  {
+    // Load more images
+    console.log('loaded more images');
+    getPhotos(25, "latest", false);
+  }
+
+  lastScrollPosition = scrollPos;
 });
