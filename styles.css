@@ -24,7 +24,7 @@ body {
 }
 
 a {
-    color: rgb(46, 205, 253);
+    color: rgb(49, 46, 253);
 }
 a:hover {
     color: rgb(218, 246, 255);
@@ -132,12 +132,31 @@ a:hover {
 .plate {
     display: inline-block;
     position: relative;
-    color: rgb(235, 235, 235);
-    background-color: rgba(53, 34, 253, 0.8);
+    color: rgb(8, 8, 8);
+    background-color: rgba(255, 193, 59, 0.85);
     border-radius:  4px;
     overflow: hidden;
     margin: 1px;
     padding: 4px;
+}
+
+.avatar {
+    display: inline-block;
+    position: relative;
+    width: auto;
+    border-radius: 16px;
+    margin: auto;
+    padding: 0;
+    background-color: rgba(56, 54, 66, 0.7);
+    z-index: 5;
+}
+
+.nameContainer {
+    display: block;
+    position: absolute;
+    top: 0px;
+    padding: 0;
+    margin: 6px;
 }
 
 .name, .bio, .likes {
@@ -154,10 +173,13 @@ a:hover {
     overflow: hidden;
 }
     .name {
+        display: inline-block;
+        position: relative;
+        margin: auto;
+        max-width: 80%;
         font-family: 'Roboto Mono', sans-serif;
         font-size: 10pt;
         top: 0px;
-        max-width: 60%;
     }
     .bio {
         font-family: 'Roboto', sans-serif;
@@ -172,7 +194,7 @@ a:hover {
         margin-right: 6px;
         top: 0px;
         right: 0px;
-        max-width: 30%;
+        max-width: 20%;
     }
         .likes:before {
             content: '❤️ ';
@@ -257,8 +279,15 @@ button:hover {
     button {
         font-size: 14pt;
     }
+    .avatar {
+        width: 32px;
+        height: 32px;
+    }
     .name, .likes {
         font-size: 16pt;
+    }
+    .nameContainer {
+        max-width: 220px;
     }
     .bio {
         font-size: 11pt;
